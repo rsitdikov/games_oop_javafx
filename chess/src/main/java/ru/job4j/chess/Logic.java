@@ -1,10 +1,9 @@
 package ru.job4j.chess;
 
-import ru.job4j.chess.firuges.Cell;
-import ru.job4j.chess.firuges.Figure;
+import ru.job4j.chess.figures.Cell;
+import ru.job4j.chess.figures.Figure;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * //TODO add comments.
@@ -25,10 +24,22 @@ public class Logic {
         boolean rst = false;
         int index = this.findBy(source);
         if (index != -1) {
-            Cell[] steps = this.figures[index].way(source, dest);
-            if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
-                rst = true;
-                this.figures[index] = this.figures[index].copy(dest);
+            try {
+                Cell[] steps = this.figures[index].way(source, dest);
+                if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
+                    rst = true;
+                    for (Cell step : steps) {
+                        if (this.findBy(step) != -1) {
+                            rst = false;
+                            break;
+                        }
+                    }
+                }
+                if (rst) {
+                    this.figures[index] = this.figures[index].copy(dest);
+                }
+            } catch (IllegalStateException e) {
+                System.out.println(e.toString());
             }
         }
         return rst;
