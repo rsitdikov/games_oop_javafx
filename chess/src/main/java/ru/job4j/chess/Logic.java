@@ -19,6 +19,16 @@ public class Logic {
     public void add(Figure figure) {
         this.figures[this.index++] = figure;
     }
+    public boolean isWayFree (Cell[] steps) {
+        boolean rst = true;
+        for (Cell step : steps) {
+            if (this.findBy(step) != -1) {
+                rst = false;
+                break;
+            }
+        }
+        return rst;
+    }
 
     public boolean move(Cell source, Cell dest) {
         boolean rst = false;
@@ -26,17 +36,9 @@ public class Logic {
         if (index != -1) {
             try {
                 Cell[] steps = this.figures[index].way(source, dest);
-                if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
-                    rst = true;
-                    for (Cell step : steps) {
-                        if (this.findBy(step) != -1) {
-                            rst = false;
-                            break;
-                        }
-                    }
-                }
-                if (rst) {
+                if (steps.length > 0 && steps[steps.length - 1].equals(dest) && isWayFree(steps)) {
                     this.figures[index] = this.figures[index].copy(dest);
+                    rst = true;
                 }
             } catch (IllegalStateException e) {
                 System.out.println(e.toString());
